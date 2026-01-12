@@ -11,22 +11,26 @@ export const shoppingSlice = createSlice({
   name: "shopping",
   initialState,
   reducers: {
-    addItem: (
-      state,
-      action: PayloadAction<Omit<ShoppingItem, "id" | "purchased" | "dateAdded"> & { dateAdded: string }>
-    ) => {
-      const newItem: ShoppingItem = {
-        ...action.payload,
-        id: uuidv4(),
-        purchased: false,
-      };
-      state.items.unshift(newItem);
-    },
+   addItem: (
+  state,
+  action: PayloadAction<Omit<ShoppingItem, "id" | "purchased" | "dateAdded">>
+) => {
+  const newItem: ShoppingItem = {
+    ...action.payload,
+    id: uuidv4(),
+    purchased: false,
+    dateAdded: new Date().toISOString(), // automatically add dateAdded
+  };
+  state.items.unshift(newItem);
+},
 
-    togglePurchased: (state, action: PayloadAction<string>) => {
-      const item = state.items.find((i) => i.id === action.payload);
-      if (item) item.purchased = !item.purchased;
-    },
+   
+togglePurchased: (state, action: PayloadAction<string>) => {
+  const item = state.items.find((i) => i.id === action.payload);
+  if (item) {
+    item.purchased = !item.purchased; // ✅ item.purchased is boolean
+  }
+},
 
     deleteItem: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter((i) => i.id !== action.payload);
